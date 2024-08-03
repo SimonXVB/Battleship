@@ -1,3 +1,92 @@
 body {
+    margin: 0;
     background-color:#fff49b;
+}
+
+#header-div {
+    padding: 20px 20px;
+    background-color: whitesmoke;
+    width: 100%;
+    border-bottom: 5px solid black;
+}
+
+#header {
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0 auto;
+    letter-spacing: 0.3rem;
+    text-align: center;
+}
+
+#player-input{
+    text-align: center;
+    margin-top: 1rem;
+}
+
+#player-input input {
+    text-align: center;
+    width: 200px;
+    height: 25px;
+    border-radius: 5px;
+    border: 2px solid black;
+}
+
+#player-input input:focus {
+    outline: 2px solid black; 
+}
+
+#player-input input::placeholder{
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+}
+
+#start {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+#start button {
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    width: 200px;
+    height: 25px;
+    border-radius: 5px;
+    border: 2px solid black;
+    letter-spacing: 0.1rem;
+}
+
+#start :hover {
+    cursor: pointer;
+}
+
+#start :disabled {
+    cursor: unset;
+}
+
+#wrapper {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: 1fr;
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+    height: 100%;  
+}
+
+#ship-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(5, 1fr);
+        grid-column-gap: 0px;
+        grid-row-gap: 0px;
+}
+
+#ship-grid div button{
+    cursor: pointer;
+}
+
+#grid {
+        display: grid;
+        grid-template-columns: repeat(10, 1fr);
+        grid-template-rows: repeat(10, 1fr);
+        grid-column-gap: 0px;
+        grid-row-gap: 0px; 
 }

@@ -26,26 +26,28 @@ class Game {
 
         this.missed = 0;
         this.totalSunk = 0;
-
-        this.carrier1 = new Ship("Carrier", 5, "C1");
-
-        this.battleship1 = new Ship("Battleship", 4, "B1");
-        this.battleship2 = new Ship("Battleship", 4, "B2");
-
-        this.destroyer1 = new Ship("Destroyer", 3, "D1");
-        this.destroyer2 = new Ship("Destroyer", 3, "D2");
-        this.destroyer3 = new Ship("Destroyer", 3, "D3");
-
-        this.submarine1 = new Ship("Submarine", 3, "S1");
-        this.submarine2 = new Ship("Submarine", 3, "S3");
-        this.submarine3 = new Ship("Submarine", 3, "S3");
-        this.submarine4 = new Ship("Submarine", 3, "S4");
-
-        this.patrol_boat1 = new Ship("Patrol Boat", 2, "P1");
-        this.patrol_boat2 = new Ship("Patrol Boat", 2, "P2");
-        this.patrol_boat3 = new Ship("Patrol Boat", 2, "P3");
-        this.patrol_boat4 = new Ship("Patrol Boat", 2, "P4");
-        this.patrol_boat5 = new Ship("Patrol Boat", 2, "P5");
+        
+        this.carrier1 = new Ship("Carrier 1", 5, "C1");
+        
+        this.battleship1 = new Ship("Battleship 1", 4, "B1");
+        this.battleship2 = new Ship("Battleship 2", 4, "B2");
+        
+        this.destroyer1 = new Ship("Destroyer 1", 3, "D1");
+        this.destroyer2 = new Ship("Destroyer 2", 3, "D2");
+        this.destroyer3 = new Ship("Destroyer 3", 3, "D3");
+        
+        this.submarine1 = new Ship("Submarine 1", 3, "S1");
+        this.submarine2 = new Ship("Submarine 2", 3, "S3");
+        this.submarine3 = new Ship("Submarine 3", 3, "S3");
+        this.submarine4 = new Ship("Submarine 4", 3, "S4");
+        
+        this.patrol_boat1 = new Ship("Patrol Boat 1", 2, "P1");
+        this.patrol_boat2 = new Ship("Patrol Boat 2", 2, "P2");
+        this.patrol_boat3 = new Ship("Patrol Boat 3", 2, "P3");
+        this.patrol_boat4 = new Ship("Patrol Boat 4", 2, "P4");
+        this.patrol_boat5 = new Ship("Patrol Boat 5", 2, "P5");
+        
+        this.currentShip = this.carrier1;
     };
 
     placeVer(ship, hor, ver) {
@@ -210,9 +212,9 @@ class Game {
         }
     }
 
-    pick(ship, hor, ver)   {
-        return ship, hor, ver
-    }
+    pick(ship)   {
+        this.currentShip = ship;
+    };
 };
 
 class CreatePlayer {
@@ -225,9 +227,9 @@ class CreatePlayer {
 };
 
 class Play {
-    constructor (p1Name, p1Mark, p2Name, p2Mark) {
-        this.p1 = new CreatePlayer(p1Name, p1Mark);
-        this.p2 = new CreatePlayer(p2Name, p2Mark);
+    constructor (p1Name, p2Name) {
+        this.p1 = new CreatePlayer(p1Name, "P1");
+        this.p2 = new CreatePlayer(p2Name, "P2");
         this.current = this.p1;
     }
 
@@ -259,8 +261,7 @@ class Play {
         } else {
             return `${this.p1.pName} still has ships that need to be placed`;
         }
-    }
+    };
+};
 
-}
-
-export {Ship, Game, CreatePlayer, Play};
+export { Ship, Game, CreatePlayer, Play};
