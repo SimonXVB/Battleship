@@ -8,11 +8,11 @@ class Ship {
 
         this.sunk = false;
         this.placed = false;
-    }
+    };
 };
 
-class Gameboard {
-    constructor (){
+class Game {
+    constructor() {
         this.board =   [[0,0,0,0,0,0,0,0,0,0],
                         [0,0,0,0,0,0,0,0,0,0],
                         [0,0,0,0,0,0,0,0,0,0],
@@ -26,59 +26,6 @@ class Gameboard {
 
         this.missed = 0;
         this.totalSunk = 0;
-    }
-
-    placeShipVertical(hor, ver, length, marking) {
-        for(let i = 0; i < length; i++) {
-            if(this.board[ver + i] === undefined) {
-                console.log("OoB ver");
-                return
-            }
-        }
-
-        for(let i = 0; i < length; i++) {
-            if(this.board[ver + i][hor] !== 0){
-                console.log("Not possible ver");
-                return
-            } else {
-                this.board[ver + i][hor] = marking;
-            }
-        }
-    };
-
-    placeShipHorizontal(hor, ver, length, marking) {
-        for(let i = 0; i < length; i++) {
-            if(this.board[ver][hor + i] === undefined) {
-                console.log("OoB hor");
-                return
-            }
-        }
-
-        for(let i = 0; i < length; i++) {
-            if(this.board[ver][hor + i] !== 0) {
-                console.log("Not possible hor");
-                return
-            } else {
-                this.board[ver][hor + i] = marking;
-            }
-        }
-    }
-    
-    receiveAttack(hor, ver) {
-        if(this.board[ver][hor] !== 0) {
-            this.board[ver][hor] = "H";
-            //console.log(`Hit at [${hor}-${ver}]`);
-            return
-        } else {
-            this.missed++;
-            //console.log(`Miss at [${hor}-${ver}] Attacks missed: ${this.missed}`);
-        }
-    };
-};
-
-class Game {
-    constructor() {
-        this.board = new Gameboard();
 
         this.carrier1 = new Ship("Carrier", 5, "C1");
 
@@ -107,7 +54,22 @@ class Game {
             return;
         }
         
-        this.board.placeShipVertical(hor, ver, ship.length, ship.marking);
+        for(let i = 0; i < ship.length; i++) {
+            if(this.board[ver + i] === undefined) {
+                console.log("OoB ver");
+                return
+            }
+        }
+
+        for(let i = 0; i < ship.length; i++) {
+            if(this.board[ver + i][hor] !== 0){
+                console.log("Not possible ver");
+                return
+            } else {
+                this.board[ver + i][hor] = ship.marking;
+            }
+        }
+
         ship.placed = true;
     };
 
@@ -115,14 +77,29 @@ class Game {
         if(ship.placed === true) {
             console.log("Ship already placed");
             return;
-        }
+        };
 
-        this.board.placeShipHorizontal(hor, ver, ship.length, ship.marking);
+        for(let i = 0; i < ship.length; i++) {
+            if(this.board[ver][hor + i] === undefined) {
+                console.log("OoB hor");
+                return
+            }
+        };
+
+        for(let i = 0; i < ship.length; i++) {
+            if(this.board[ver][hor + i] !== 0) {
+                console.log("Not possible hor");
+                return
+            } else {
+                this.board[ver][hor + i] = ship.marking;
+            }
+        };
+
         ship.placed = true;
     };
 
     hit(hor, ver) {
-        switch(this.board.board[ver][hor]) {
+        switch(this.board[ver][hor]) {
             case "C1":
                 console.log("Carrier has been hit");
                 break;
@@ -190,43 +167,100 @@ class Game {
                 console.log("Missed");
         }
 
-        this.board.receiveAttack(hor, ver);
+        if(this.board[ver][hor] !== 0) {
+            this.board[ver][hor] = "H";
+            return
+        } else {
+            this.missed++;
+        }
+
         this.checkSunk();
         this.checkWin();
-    }
+    };
 
     checkSunk() {
         for(const entry in this) {
             if(this[entry].length === 0) {
-                this.board.totalSunk++;
+                this.totalSunk++;
                 this[entry].sunk = true;
                 console.log(`${this[entry].name} has been sunk!`);
             }
         }
-    }
+    };
 
     checkWin() {
-        if(this.board.totalSunk === 15) {
+        if(this.totalSunk === 15) {
             console.log("You win");
-            console.log(this.board.totalSunk)
+            console.log(this.totalSunk)
             return
         } else {
             return;
         }
-    }
+    };
 
     setSunk() {
-        this.board.totalSunk = 15;
+        this.totalSunk = 15;
+    };
+
+    setPlaced() {
+        for(const entry in this) {
+            if(this[entry].name) {
+                this[entry].placed = true;
+            }
+        }
     }
+
+    pick(ship, hor, ver)   {
+        return ship, hor, ver
+    }
+};
+
+class CreatePlayer {
+    constructor(pName, pMark) {
+            this.pName = pName;
+            this.pMark = pMark;
+            this.pBoard = new Game();
+            this.ready = false;
+    };
+};
+
+class Play {
+    constructor (p1Name, p1Mark, p2Name, p2Mark) {
+        this.p1 = new CreatePlayer(p1Name, p1Mark);
+        this.p2 = new CreatePlayer(p2Name, p2Mark);
+        this.current = this.p1;
+    }
+
+    checkReady() {
+        for(const entry in this.p1.pBoard) {
+            if(this.p1.pBoard[entry].name) {
+                if(!(this.p1.pBoard[entry].placed === true)) {
+                    return
+                } else {
+                    this.p1.ready = true;
+                }
+            }
+        };
+        
+        for(const entry in this.p2.pBoard) {
+            if(this.p2.pBoard[entry].name) {
+                if(!(this.p2.pBoard[entry].placed === true)) {
+                    return
+                } else {
+                    this.p2.ready = true;
+                }
+            }
+        };
+    };
+
+    switch() {
+        if(this.p1.ready === true) {
+            this.current === this.p1 ? this.current = this.p2 : this.current = this.p1;
+        } else {
+            return `${this.p1.pName} still has ships that need to be placed`;
+        }
+    }
+
 }
 
-function reset() {
-    game = new Game();
-}
-
-let game = new Game();
-game.placeVer(game.patrol_boat4, 0,0);
-game.hit(0,0);
-game.hit(0,1);
-
-console.log(game);
+export {Ship, Game, CreatePlayer, Play};
