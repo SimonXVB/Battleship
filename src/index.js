@@ -34,7 +34,7 @@ class Game {
         this.destroyer3 = new Ship("Destroyer 3", 3, "D3");
         
         this.submarine1 = new Ship("Submarine 1", 3, "S1");
-        this.submarine2 = new Ship("Submarine 2", 3, "S3");
+        this.submarine2 = new Ship("Submarine 2", 3, "S2");
         this.submarine3 = new Ship("Submarine 3", 3, "S3");
         this.submarine4 = new Ship("Submarine 4", 3, "S4");
         
@@ -50,24 +50,25 @@ class Game {
         this.totalPlaced = 0;
         this.direction = "vertical";
         this.winner = false;
+        this.log = "";
     };
 
     placeVer(ship, hor, ver) {
         if(ship.placed === true) {
-            console.log("Ship already placed");
+            this.log = "Ship already placed";
             return;
         }
         
         for(let i = 0; i < ship.length; i++) {
             if(this.board[ver + i] === undefined) {
-                console.log("OoB ver");
+                this.log = "OoB ver";
                 return
             }
         }
 
         for(let i = 0; i < ship.length; i++) {
             if(this.board[ver + i][hor] !== 0){
-                console.log("Not possible ver");
+                this.log = "Not possible ver";
                 return
             } else {
                 this.board[ver + i][hor] = ship.marking;
@@ -80,20 +81,20 @@ class Game {
 
     placeHor(ship, hor, ver) {
         if(ship.placed === true) {
-            console.log("Ship already placed");
+            this.log = "Ship already placed";
             return;
         };
 
         for(let i = 0; i < ship.length; i++) {
             if(this.board[ver][hor + i] === undefined) {
-                console.log("OoB hor");
+                this.log = "OoB hor";
                 return
             }
         };
 
         for(let i = 0; i < ship.length; i++) {
             if(this.board[ver][hor + i] !== 0) {
-                console.log("Not possible hor");
+                this.log = "Not possible hor";
                 return
             } else {
                 this.board[ver][hor + i] = ship.marking;
@@ -109,75 +110,72 @@ class Game {
             switch(this.board[ver][hor]) {
                 case "C1":
                     this.carrier1.length--;
-                    alert("Carrier has been hit");
+                    this.log = "Carrier has been hit";
                     break;
                     //
                 case "B1":
                     this.battleship1.length--;
-                    alert("Battleship has been hit");
+                    this.log = "Battleship has been hit";
                     break;
                 case "B2":
                     this.battleship2.length--;
-                    alert("Battleship has been hit");
+                    this.log = "Battleship has been hit";
                     break;
                     //
                 case "D1":
                     this.destroyer1.length--;
-                    alert("Destroyer has been hit");
+                    this.log = "Destroyer has been hit";
                     break;
                 case "D2":
                     this.destroyer2.length--;
-                    alert("Destroyer has been hit");
+                    this.log = "Destroyer has been hit";
                     break;
                 case "D3":
                     this.destroyer3.length--;
-                    alert("Destroyer has been hit");
+                    this.log = "Destroyer has been hit";
                     break;
                     //
                 case "S1":
                     this.submarine1.length--
-                    alert("Submarine has been hit");
+                    this.log = "Submarine has been hit";
                     break;
                 case "S2":
                     this.submarine2.length--
-                    console.log("Submarine has been hit");
+                    this.log = "Submarine has been hit";
                     break;
                 case "S3": 
                     this.submarine3.length--
-                    alert("Submarine has been hit");
+                    this.log = "Submarine has been hit";
                     break;
                 case "S4": 
                     this.submarine4.length--
-                    alert("Submarine has been hit");
+                    this.log = "Submarine has been hit";
                     break;
                     //
                 case "P1":
                     this.patrol_boat1.length--;
-                    alert("Patrol Boat has been hit");
+                    this.log = "Patrol Boat has been hit";
                     break;
                 case "P2":
                     this.patrol_boat2.length--;
-                    alert("Patrol Boat has been hit");
+                    this.log = "Patrol Boat has been hit";
                     break;
                 case "P3":
                     this.patrol_boat3.length--;
-                    alert("Patrol Boat has been hit");
+                    this.log = "Patrol Boat has been hit";
                     break;
                 case "P4":
                     this.patrol_boat4.length--;
-                    alert("Patrol Boat has been hit");
+                    this.log = "Patrol Boat has been hit";
                     break;
                 case "P5":
                     this.patrol_boat5.length--;
-                    alert("Patrol Boat has been hit");
+                    this.log = "Patrol Boat has been hit";
                     break;
-                case 0:
-                    this.missed++
-                    return
-                default:
-                    this.missed++
-                    return
             }
+        } else {
+            this.log = "Miss";
+            this.missed++;
         }
         this.board[ver][hor] = "H";
 
@@ -187,18 +185,20 @@ class Game {
 
     checkSunk() {
         for(const entry in this) {
-            if(this[entry].sunk !== true) {
-                if(this[entry].length === 0) {
-                    this.totalSunk++;
-                    this[entry].sunk = true;
-                    alert(`${this[entry].name} has been sunk!`);
+            if(this[entry].name){
+                if(this[entry].sunk !== true) {
+                    if(this[entry].length === 0) {
+                        this.totalSunk++;
+                        this[entry].sunk = true;
+                        this.log = `${this[entry].name} has been sunk!`;
+                    }
                 }
             }
         }
     };
 
     checkWin() {
-        if(this.totalSunk === 2) {
+        if(this.totalSunk === 15) {
             this.winner = true;
             return
         }
@@ -240,7 +240,7 @@ class Play {
     }
 
     checkReady() {
-        if(this.current.pBoard.totalPlaced === 2) {
+        if(this.current.pBoard.totalPlaced === 15) {
             this.current.ready = true;
         }
     };

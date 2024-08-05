@@ -5,7 +5,7 @@ const p1Input = document.getElementById("p1-input");
 const p2Input = document.getElementById("p2-input");
 const start = document.getElementById("start-btn");
 const grid = document.getElementById("grid");
-const wrapper = document.getElementById("wrapper");
+const content = document.getElementById("content");
 
 let game;
 
@@ -15,7 +15,7 @@ function startGame () {
         return;
     }
 
-    game = new Play(p1Input.value, p2Input.value)
+    game = new Play(p1Input.value, p2Input.value);
     
     start.disabled = true;
     p1Input.disabled = true;
@@ -36,7 +36,7 @@ function renderShips() {
             shipGrid.appendChild(top);
             
             const name = document.createElement("div");
-            name.innerHTML = `Ship: ${game.current.pBoard[entry].name}`;
+            name.innerHTML = `${game.current.pBoard[entry].name}`;
             top.appendChild(name);
             
             const length = document.createElement("div");
@@ -66,26 +66,34 @@ function renderShips() {
 };
 
 function renderControls() {
-    const currentPick = document.createElement("p");
-    currentPick.id = "current-ship";
-    currentPick.innerHTML = `Current ship: ${game.current.pBoard.currentShip.name}`;
-    shipGrid.appendChild(currentPick);
+    const controlsContainer1 = document.createElement("div");
+    controlsContainer1.id = "controls-container1";
+    shipGrid.appendChild(controlsContainer1);
 
-    const currentPlayer = document.createElement("p");
-    currentPlayer.id = "current-player";
-    currentPlayer.innerHTML = `Current player board: ${game.current.pName}`;
-    shipGrid.appendChild(currentPlayer);
+    const currentP = document.createElement("div");
+    currentP.id = "currentP";
+    currentP.innerHTML = `Current Ship: ${game.current.pBoard.currentShip.name} --- Current Player Board: ${game.current.pName}`;
+    controlsContainer1.appendChild(currentP);
+
+    const controlsContainer2 = document.createElement("div");
+    controlsContainer2.id = "controls-container2";
+    shipGrid.appendChild(controlsContainer2);
 
     const placeHor = document.createElement("button");
-    placeHor.innerHTML = "Place horizontally";
+    placeHor.innerHTML = "Place Horizontally";
     placeHor.addEventListener("click", () => setDirection("horizontal"));
-    shipGrid.appendChild(placeHor);
+    controlsContainer2.appendChild(placeHor);
 
     const placeVer = document.createElement("button");
-    placeVer.innerHTML = "Place vertically";
+    placeVer.innerHTML = "Place Vertically";
     placeVer.addEventListener("click", () => setDirection("vertical"));
-    shipGrid.appendChild(placeVer);
-}
+    controlsContainer2.appendChild(placeVer);
+
+    const log = document.createElement("p");
+    log.id = "log";
+    log.innerHTML = `Log: ${game.current.pBoard.log}`;
+    controlsContainer2.appendChild(log);
+};
 
 function renderGrid() {
     let ver = 0;
@@ -101,10 +109,10 @@ function renderGrid() {
         
         const squareGrid = document.createElement("div");
         squareGrid.id = `${ver}-${hor}`;
+        squareGrid.classList.add("grid-square");
         squareGrid.addEventListener("mouseenter", gridHoverIn.bind(null, hor, ver));
         squareGrid.addEventListener("mouseleave", gridHoverOut.bind(null, hor, ver));
         squareGrid.addEventListener("click", place.bind(null, hor, ver));
-        squareGrid.classList.add("grid-square");
         grid.appendChild(squareGrid);
     }
 };
@@ -115,14 +123,7 @@ function updateUIPre() {
     renderShips();
     renderControls();
     renderGrid();
-
-    for(let i = 0; i < game.current.pBoard.board.length; i++) {
-        for(let j = 0; j < game.current.pBoard.board[i].length; j++)
-            if(game.current.pBoard.board[i][j] !== 0) {
-                const square = document.getElementById(`${i}-${j}`);
-                square.style.backgroundColor = "white";
-            }
-    }
+    checkGrid();
 
     if(game.p1.ready === true && game.p2.ready === true) {
         updateUIPost();
@@ -178,9 +179,9 @@ function renderHitGrid() {
 };
 
 function renderControlsHit() {
-    const currentPlayer = document.createElement("p");
+    const currentPlayer = document.createElement("div");
     currentPlayer.id = "current-player";
-    currentPlayer.innerHTML = `Current player: ${game.current.pName}`;
+    currentPlayer.innerHTML = `Current Player Board: ${game.current.pName}`;
     shipGrid.appendChild(currentPlayer);
 
     const switchPlayer = document.createElement("button");
@@ -188,7 +189,12 @@ function renderControlsHit() {
     switchPlayer.innerHTML = `Switch`;
     switchPlayer.addEventListener("click", () => { game.switch(); updateUIPost(); });
     shipGrid.appendChild(switchPlayer);
-}
+
+    const log = document.createElement("p");
+    log.id = "log";
+    log.innerHTML = `Log: ${game.current.pBoard.log}`;
+    shipGrid.appendChild(log);
+};
 
 function hit(hor, ver) {
     game.current.pBoard.hit(hor, ver);
@@ -208,7 +214,21 @@ function hit(hor, ver) {
             }
         }
     }
+    console.log(game.current.pBoard);
+
+    document.getElementById("log").innerHTML = `Log: ${game.current.pBoard.log}`
     checkWin();
+};
+
+function checkGrid() {
+    for(let i = 0; i < game.current.pBoard.board.length; i++) {
+        for(let j = 0; j < game.current.pBoard.board[i].length; j++) {
+            if(game.current.pBoard.board[i][j] !== 0) {
+                let currSquare = document.getElementById(`${i}-${j}`);
+                currSquare.style.backgroundColor = "white";
+            }
+        }
+    };
 };
 
 function setDirection(direction) {
@@ -216,20 +236,15 @@ function setDirection(direction) {
 };
 
 function place(hor, ver) {
-    if(game.current.pBoard.direction = "vertical") {
+    if(game.current.pBoard.direction === "vertical") {
         game.current.pBoard.placeVer(game.current.pBoard.currentShip, hor, ver);
-    } else {
-        game.current.pBoard.placeVer(game.current.pBoard.currentShip, hor, ver);
+    } else if (game.current.pBoard.direction === "horizontal"){
+        game.current.pBoard.placeHor(game.current.pBoard.currentShip, hor, ver);
     };
-
-    for(let i = 0; i < game.current.pBoard.board.length; i++) {
-        for(let j = 0; j < game.current.pBoard.board[i].length; j++)
-            if(game.current.pBoard.board[i][j] !== 0) {
-                const square = document.getElementById(`${i}-${j}`);
-                square.style.backgroundColor = "white";
-            }
-    };
-
+    
+    console.log(game.current.pBoard);
+    
+    checkGrid();
     game.changePlayer();
     updateUIPre();
 };
@@ -267,13 +282,20 @@ function gridHoverOut(hor, ver) {
 };
 
 function checkWin() {
+    const win = document.createElement("p");
+    win.id = "win";
+
     if(game.p1.pBoard.winner === true) {
-        wrapper.innerHTML = `${game.p2.pName} has won!`;
+        wrapper.innerHTML = "";
+        win.innerHTML = `${game.p2.pName} has won!`;
+        content.appendChild(win);
     }
 
     if(game.p2.pBoard.winner === true) {
-        wrapper.innerHTML = `${game.p1.pName} has won!`;
+        wrapper.innerHTML = "";
+        win.innerHTML = `${game.p1.pName} has won!`;
+        content.appendChild(win);
     }
-}
+};
 
 start.addEventListener("click", startGame);
