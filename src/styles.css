@@ -90,3 +90,8 @@ body {
         grid-column-gap: 0px;
         grid-row-gap: 0px; 
 }
+
+.grid-square {
+    border-radius: 0;
+    border: 2px solid black;
+}
