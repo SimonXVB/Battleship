@@ -6,6 +6,7 @@ const p2Input = document.getElementById("p2-input");
 const start = document.getElementById("start-btn");
 const grid = document.getElementById("grid");
 const content = document.getElementById("content");
+const info = document.getElementById("info");
 
 let game;
 
@@ -21,6 +22,8 @@ function startGame () {
     p1Input.disabled = true;
     p2Input.disabled = true;
     
+    info.innerHTML = `${game.current.pName} place your ships!`;
+
     updateUIPre();
 };
 
@@ -59,7 +62,7 @@ function renderShips() {
 
         }
         
-        if(count === 15) {
+        if(count === 5) {
             return
         }
     };
@@ -126,6 +129,8 @@ function updateUIPre() {
     checkGrid();
 
     if(game.p1.ready === true && game.p2.ready === true) {
+        game.switch();
+        info.innerHTML = `${game.attacker} attack ${game.curr}'s board!`;
         updateUIPost();
     }
 };
@@ -187,7 +192,7 @@ function renderControlsHit() {
     const switchPlayer = document.createElement("button");
     switchPlayer.id = "switch";
     switchPlayer.innerHTML = `Switch`;
-    switchPlayer.addEventListener("click", () => { game.switch(); updateUIPost(); });
+    switchPlayer.addEventListener("click", () => { game.switch(); info.innerHTML = `${game.attacker} attack ${game.curr}'s board!`; updateUIPost(); });
     shipGrid.appendChild(switchPlayer);
 
     const log = document.createElement("p");
@@ -246,6 +251,7 @@ function place(hor, ver) {
     
     checkGrid();
     game.changePlayer();
+    info.innerHTML = `${game.current.pName} place your ships!`;
     updateUIPre();
 };
 
@@ -287,15 +293,18 @@ function checkWin() {
 
     if(game.p1.pBoard.winner === true) {
         wrapper.innerHTML = "";
-        win.innerHTML = `${game.p2.pName} has won!`;
+        win.innerHTML = `${game.p2.pName} has won! Reload the page to play again.`;
         content.appendChild(win);
+        info.innerHTML = "";
     }
 
     if(game.p2.pBoard.winner === true) {
         wrapper.innerHTML = "";
-        win.innerHTML = `${game.p1.pName} has won!`;
+        win.innerHTML = `${game.p1.pName} has won! Reload the page to play again.`;
         content.appendChild(win);
+        info.innerHTML = "";
     }
+
 };
 
 start.addEventListener("click", startGame);
